@@ -8,14 +8,19 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MessageServer {
+    private final ChatFactory chatFactory;
     private MessageServerObserver observer;
     private ServerSocket serverSocket;
     List<Socket> sockets = new ArrayList<>();
     List<Thread> threads = new ArrayList<>();
 
-    public MessageServer(MessageServerObserver observer) {
-
+    public MessageServer(MessageServerObserver observer, ChatFactory chatFactory) {
+        this.chatFactory = chatFactory;
         this.observer = observer;
+    }
+
+    public MessageServer(MessageServerObserver observer) {
+        this(observer, new ChatFactory());
     }
 
     private void infiniteReadLoop(Socket socket){
@@ -56,12 +61,16 @@ public class MessageServer {
     public void start(){
 
         try {
-            serverSocket = new ServerSocket(9090);
+            serverSocket = chatFactory.createServerSocket();
 
         } catch (IOException e) {
             throw new RuntimeException("Could not start server",e);
         }
         createAcceptThread();
+    }
+
+    private ServerSocket createServerSocket() throws IOException {
+        return chatFactory.createServerSocket();
     }
 
     private void createAcceptThread() {

@@ -14,7 +14,6 @@ public class ChatClient {
         Socket socket = new Socket(serverAddress,9090);
 
         while(scanner.hasNext() ){
-            System.out.println(socket.isConnected()+ " "+ socket.isClosed());
             String message = scanner.nextLine();
             OutputStream os = socket.getOutputStream();
             PrintWriter pw = new PrintWriter(os,true);
